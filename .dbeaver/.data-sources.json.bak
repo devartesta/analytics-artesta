@@ -1,0 +1,37 @@
+{
+	"folders": {},
+	"connections": {
+		"postgresql_generic-19968a5db37-3f029b49b53631c1": {
+			"provider": "generic",
+			"driver": "postgresql_generic",
+			"name": "railway",
+			"save-password": true,
+			"configuration": {
+				"host": "shinkansen.proxy.rlwy.net",
+				"port": "33105",
+				"database": "railway",
+				"url": "jdbc:postgresql://shinkansen.proxy.rlwy.net:33105/railway",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": true,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800,
+			"auto-close-connections": true,
+			"close-connections-period": 14400
+		}
+	}
+}
