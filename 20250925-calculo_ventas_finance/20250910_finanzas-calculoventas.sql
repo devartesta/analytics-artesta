@@ -474,3 +474,4 @@ group by order_month_yyyymm, shipping_country_code, payment_currency,
 is_rever_tag, is_hannun_tag, is_mirakl_tag
 ;
 
+-- Fin
