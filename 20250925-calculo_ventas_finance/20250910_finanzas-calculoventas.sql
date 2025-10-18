@@ -284,7 +284,7 @@ refunds_prev_months AS (
         - COALESCE((SELECT SUM((t->>'amount')::numeric)
                     FROM jsonb_array_elements(COALESCE(r->'transactions','[]'::jsonb)) t
                     WHERE t->>'currency' = COALESCE(jo.raw_json->>'presentment_currency', jo.raw_json->>'currency')), 0)
-        - COALESCE((SELECT SUM((rli->'total_tax_set'->'presentment_money'->>'amount')::numeric)
+        + COALESCE((SELECT SUM((rli->'total_tax_set'->'presentment_money'->>'amount')::numeric)
                     FROM jsonb_array_elements(COALESCE(r->'refund_line_items','[]'::jsonb)) rli), 0)
       ) AS shown_net_presentment,
 
