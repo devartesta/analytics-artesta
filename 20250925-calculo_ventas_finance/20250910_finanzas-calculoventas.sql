@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS shopify.usa_ventas_202508;
+DROP TABLE IF EXISTS shopify.usa_ventas_202509_2;
 
-CREATE TABLE shopify.usa_ventas_202508 AS
+CREATE TABLE shopify.usa_ventas_202509_2 AS
 WITH params AS (
-  SELECT '202508'::text AS target_yyyymm
+  SELECT '202509'::text AS target_yyyymm
 ),
 
 /* ==================== Refunds (mismo mes) sin duplicados ==================== */
@@ -250,6 +250,7 @@ refunds_prev_months AS (
       jo.raw_json->'shipping_address'->>'country_code'  AS shipping_country_code,
       CASE WHEN jo.raw_json->'shipping_address'->>'country_code' = 'US'
            THEN jo.raw_json->'shipping_address'->>'province_code' END AS shipping_state_code,
+      jo.raw_json->'shipping_address'->>'zip' as shipping_zip_code,
 
       COALESCE(jo.raw_json->>'presentment_currency', jo.raw_json->>'currency') AS payment_currency,
       COALESCE((SELECT (tl->>'rate')::numeric

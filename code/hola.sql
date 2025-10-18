@@ -1,1 +1,1 @@
-select * from dual;
+select * from shopify.orders where mes_yyyymm = '202509' limit 100;
