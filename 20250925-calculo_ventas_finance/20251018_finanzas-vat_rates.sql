@@ -1,10 +1,10 @@
--- 2) Tabla única de VAT por país + rango de ZIP
+-- 1) Tabla única de VAT por país + rango de ZIP
 DROP TABLE IF EXISTS finance.vat_rates;
 CREATE TABLE finance.vat_rates (
     shipping_country_code CHAR(2) NOT NULL,     -- ISO-3166-1 alpha-2 (ej. ES, PT, FR)
     zip_ini BIGINT NOT NULL,                    -- inicio de rango (normalizado a dígitos)
     zip_fin BIGINT NOT NULL,                    -- fin de rango (incluido)
-    standard_rate NUMERIC(5,2) NOT NULL,        -- VAT estándar aplicable en ese tramo
+    standard_rate NUMERIC(5,4) NOT NULL,        -- VAT estándar aplicable en ese tramo (decimal)
     updated_date DATE NOT NULL DEFAULT CURRENT_DATE,
 
     CHECK (zip_ini <= zip_fin),
@@ -12,55 +12,49 @@ CREATE TABLE finance.vat_rates (
 );
 
 -- Índice de ayuda (busca por país + BETWEEN)
--- (Suficiente para tu patrón de consulta; si algún día quieres evitar solapamientos,
---  podemos migrar a un GENERATED int8range + EXCLUDE con btree_gist.)
 CREATE INDEX IF NOT EXISTS ix_vat_rates_country_zip
   ON finance.vat_rates (shipping_country_code, zip_ini, zip_fin);
 
--- 3) Espanya
+-- 3) España
 INSERT INTO finance.vat_rates (shipping_country_code, zip_ini, zip_fin, standard_rate, updated_date)
-values
-('ES', -1, 34999, 21.00, CURRENT_DATE), -- España
-('ES', 35000, 35999, 7.00, CURRENT_DATE), -- Las palmas
-('ES', 36000, 37999, 21.00, CURRENT_DATE), -- España
-('ES', 38000, 38999, 7.00, CURRENT_DATE), -- Tenerife
-('ES', 39000, 50999, 21.00, CURRENT_DATE), -- España
-('ES', 51000, 51999, 0.00, CURRENT_DATE), -- Ceuta
-('ES', 52000, 52999, 0.00, CURRENT_DATE), -- Melilla
-('ES', 53000, 999999999, 21.00, CURRENT_DATE);-- España
+VALUES
+('ES', -1, 34999, 0.21, CURRENT_DATE),
+('ES', 35000, 35999, 0.07, CURRENT_DATE),
+('ES', 36000, 37999, 0.21, CURRENT_DATE),
+('ES', 38000, 38999, 0.07, CURRENT_DATE),
+('ES', 39000, 50999, 0.21, CURRENT_DATE),
+('ES', 51000, 51999, 0.00, CURRENT_DATE),
+('ES', 52000, 52999, 0.00, CURRENT_DATE),
+('ES', 53000, 999999999, 0.21, CURRENT_DATE);
 
-
--- 4) Resto UE (estándar aprox. 2025). Ajusta si cambia normativa
+-- 4) Resto UE (estándar aprox. 2025)
 INSERT INTO finance.vat_rates (shipping_country_code, zip_ini, zip_fin, standard_rate)
 VALUES
-('AT', -1, 999999999, 20.00),
-('BE', -1, 999999999, 21.00),
-('BG', -1, 999999999, 20.00),
-('HR', -1, 999999999, 25.00),
-('CY', -1, 999999999, 19.00),
-('CZ', -1, 999999999, 21.00),
-('DK', -1, 999999999, 25.00),
-('EE', -1, 999999999, 22.00),
-('FI', -1, 999999999, 24.00),
-('FR', -1, 999999999, 20.00),
-('DE', -1, 999999999, 19.00),
-('GR', -1, 999999999, 24.00),
-('HU', -1, 999999999, 27.00),
-('IE', -1, 999999999, 23.00),
-('IT', -1, 999999999, 22.00),
-('LV', -1, 999999999, 21.00),
-('LT', -1, 999999999, 21.00),
-('LU', -1, 999999999, 17.00),
-('MT', -1, 999999999, 18.00),
-('NL', -1, 999999999, 21.00),
-('PL', -1, 999999999, 23.00),
-('PT', -1, 999999999, 23.00),
-('RO', -1, 999999999, 19.00),
-('SK', -1, 999999999, 20.00),
-('SI', -1, 999999999, 22.00),
-('SE', -1, 999999999, 25.00);
+('AT', -1, 999999999, 0.20),
+('BE', -1, 999999999, 0.21),
+('BG', -1, 999999999, 0.20),
+('HR', -1, 999999999, 0.25),
+('CY', -1, 999999999, 0.19),
+('CZ', -1, 999999999, 0.21),
+('DK', -1, 999999999, 0.25),
+('EE', -1, 999999999, 0.22),
+('FI', -1, 999999999, 0.24),
+('FR', -1, 999999999, 0.20),
+('DE', -1, 999999999, 0.19),
+('GR', -1, 999999999, 0.24),
+('HU', -1, 999999999, 0.27),
+('IE', -1, 999999999, 0.23),
+('IT', -1, 999999999, 0.22),
+('LV', -1, 999999999, 0.21),
+('LT', -1, 999999999, 0.21),
+('LU', -1, 999999999, 0.17),
+('MT', -1, 999999999, 0.18),
+('NL', -1, 999999999, 0.21),
+('PL', -1, 999999999, 0.23),
+('PT', -1, 999999999, 0.23),
+('RO', -1, 999999999, 0.19),
+('SK', -1, 999999999, 0.20),
+('SI', -1, 999999999, 0.22),
+('SE', -1, 999999999, 0.25);
 
-
-
-select * from finance.vat_rates;
-
+SELECT * FROM finance.vat_rates;
