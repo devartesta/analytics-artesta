@@ -1,6 +1,3 @@
--- 1) Esquema
-CREATE SCHEMA IF NOT EXISTS finance;
-
 -- 2) Tabla única de VAT por país + rango de ZIP
 DROP TABLE IF EXISTS finance.vat_rates;
 CREATE TABLE finance.vat_rates (
@@ -20,7 +17,20 @@ CREATE TABLE finance.vat_rates (
 CREATE INDEX IF NOT EXISTS ix_vat_rates_country_zip
   ON finance.vat_rates (shipping_country_code, zip_ini, zip_fin);
 
--- 3) Carga base de países UE (estándar aprox. 2025). Ajusta si cambia normativa
+-- 3) Espanya
+INSERT INTO finance.vat_rates (shipping_country_code, zip_ini, zip_fin, standard_rate, updated_date)
+values
+('ES', -1, 34999, 21.00, CURRENT_DATE), -- España
+('ES', 35000, 35999, 7.00, CURRENT_DATE), -- Las palmas
+('ES', 36000, 37999, 21.00, CURRENT_DATE), -- España
+('ES', 38000, 38999, 7.00, CURRENT_DATE), -- Tenerife
+('ES', 39000, 50999, 21.00, CURRENT_DATE), -- España
+('ES', 51000, 51999, 0.00, CURRENT_DATE), -- Ceuta
+('ES', 52000, 52999, 0.00, CURRENT_DATE), -- Melilla
+('ES', 53000, 999999999, 21.00, CURRENT_DATE);-- España
+
+
+-- 4) Resto UE (estándar aprox. 2025). Ajusta si cambia normativa
 INSERT INTO finance.vat_rates (shipping_country_code, zip_ini, zip_fin, standard_rate)
 VALUES
 ('AT', -1, 999999999, 20.00),
@@ -48,19 +58,9 @@ VALUES
 ('RO', -1, 999999999, 19.00),
 ('SK', -1, 999999999, 20.00),
 ('SI', -1, 999999999, 22.00),
-('ES', -1, 999999999, 21.00),
 ('SE', -1, 999999999, 25.00);
 
 
--- 4) Overrides España (ES):
--- Canarias (Las Palmas 35000–35999, S/C Tenerife 38000–38999)
-INSERT INTO finance.vat_rates (shipping_country_code, zip_ini, zip_fin, standard_rate, updated_date)
-VALUES
-('ES', 35000, 35999, 0.00, CURRENT_DATE),
-('ES', 38000, 38999, 0.00, CURRENT_DATE);
 
--- Ceuta (51000–51999) y Melilla (52000–52999)
-INSERT INTO finance.vat_rates (shipping_country_code, zip_ini, zip_fin, standard_rate, updated_date)
-VALUES
-('ES', 51000, 51999, 0.00, CURRENT_DATE),
-('ES', 52000, 52999, 0.00, CURRENT_DATE);
+select * from finance.vat_rates;
+
